@@ -1,96 +1,130 @@
-District Dehradun - Geospatial Data Platform
+# 🗺️ District Dehradun – GIS Viewer
 
-📖 Overview
-This project is a live geospatial data server and visualization platform designed specifically for district planners and administrators of Dehradun. Its primary goal is to provide a centralized, real-time interface for accessing and visualizing critical spatial data, including:
+An interactive, map-based portal for **Almora District**, built with React, TypeScript, Leaflet, and the Google Gemini API. The app lets citizens and administrators explore geospatial data, layers, and district information through a fast, modern web interface.
 
-Administrative Boundaries
+> **Live demo:** 
 
-River and Stream Networks
+---
 
-Village-Level Geographic Information
+## 📖 About
 
-The application synchronizes with a database to ensure that the most current geographical shapefiles are available for analysis and decision-making.
+This repository hosts the **Dehradun GIS Viewer** — a web application for visualizing geographic and administrative data for Dehradun District, Uttarakhand. It combines an interactive Leaflet map with an Express/Node backend and Gemini-powered AI capabilities.
+## ✨ Features
 
-✨ Key Features
-Real-time Data Sync: Automatically connects to a secure database to download and update geographical boundaries, river streams, and village data.
+- 🗺️ **Interactive mapping** with [Leaflet](https://leafletjs.com/) and [proj4](https://github.com/proj4js/proj4js) for coordinate/projection handling
+- ⚛️ **Modern frontend** built with React 19, TypeScript, and Vite
+- 🤖 **AI-assisted features** powered by the [`@google/genai`](https://www.npmjs.com/package/@google/genai) (Gemini) SDK
+- 🎨 **Styled with Tailwind CSS** and animated with [Motion](https://motion.dev/)
+- 🖥️ **Node/Express backend** (`server.ts`) serving the app and API routes
+- 🗄️ **MongoDB** integration for persisting application data
+- 🎛️ Icons via [Lucide](https://lucide.dev/)
 
-Live Visualization: The server provides a dynamic view of the district's geography.
+## 🛠️ Tech Stack
 
-Planner & Administrator Focus: The interface and data layers are curated for administrative and planning use-cases.
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, TypeScript, Vite, Tailwind CSS |
+| Mapping | Leaflet, proj4 |
+| AI | Google Gemini (`@google/genai`) |
+| Backend | Node.js, Express, tsx |
+| Database | MongoDB |
+| Animation / UI | Motion, Lucide React |
+| Tooling | esbuild, TypeScript compiler |
 
-MongoDB Integration: Utilizes MongoDB for data storage and streaming, enabling a responsive, live data feed.
+## 📂 Project Structure
 
-🚀 Live Demo
-A live version of the application is hosted on Render and can be accessed here:
-https://district-dehradun.onrender.com
+```
+District-Dehradun/
+├── src/                  # Application source (components, map logic, etc.)
+├── index.html            # App entry HTML
+├── server.ts             # Express server entry point
+├── check-properties.js   # Utility/validation script
+├── metadata.json         # App metadata (used by AI Studio)
+├── vite.config.ts        # Vite build configuration
+├── tsconfig.json         # TypeScript configuration
+├── .env.example           # Environment variable template
+├── package.json
+└── README.md
+```
 
-Note: The live server may display "Awaiting MongoDB Live Stream" if the database is not currently active or streaming data. This is expected behavior when the backend data source is not publishing updates.
+## 🚀 Getting Started
 
-🛠️ Technology Stack
-Backend: Node.js (Inferred)
+### Prerequisites
 
-Database: MongoDB (for storing and streaming geospatial data)
+- [Node.js](https://nodejs.org/) (LTS recommended)
+- npm
+- A [Gemini API key](https://aistudio.google.com/apikey)
 
-Hosting: Render
+### Installation
 
-Data Format: Spatial Shapefiles
+```bash
+# Clone the repository
+git clone https://github.com/RawatGitLab/District-Dehradun.git
 
-🔧 Local Development & Setup
-To run this project locally, follow these steps:
+# Navigate into the project directory
+cd District-Dehradun
 
-Prerequisites
-Node.js and npm installed
-
-MongoDB instance (local or cloud-based, e.g., MongoDB Atlas)
-
-Installation
-Clone the repository:
-
-bash
-git clone https://github.com/[your-username]/[your-repo-name].git
-cd [your-repo-name]
-Install dependencies:
-
-bash
+# Install dependencies
 npm install
-Set up environment variables:
-Create a .env file in the root directory and add your MongoDB connection string:
+```
 
-text
-MONGODB_URI=your_mongodb_connection_string
-Seed the database (Optional):
-If you have initial shapefiles, you would need to import them into your MongoDB collection. The specific script for this is not detailed in the live app but would typically be a custom import routine.
+### Environment Variables
 
-Running the Server
-Start the server locally:
+Copy `.env.example` to `.env` and fill in the required values:
 
-bash
+```bash
+cp .env.example .env
+```
+
+| Variable | Description |
+|---|---|
+| `GEMINI_API_KEY` | Required for Gemini AI API calls |
+| `APP_URL` | The URL where the app is hosted (used for self-referential links/callbacks) |
+
+### Available Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the development server (`tsx server.ts`) |
+| `npm run build` | Build the frontend with Vite and bundle the server with esbuild |
+| `npm start` | Run the production build (`dist/server.cjs`) |
+| `npm run preview` | Preview the production Vite build |
+| `npm run lint` | Type-check the project (`tsc --noEmit`) |
+| `npm run clean` | Remove build artifacts |
+
+### Running Locally
+
+```bash
+npm run dev
+```
+
+Then open the URL printed in your terminal (typically `http://localhost:5173` or the port configured by Vite/Express).
+
+### Building for Production
+
+```bash
+npm run build
 npm start
-The application should now be running on http://localhost:3000 (or the port you have configured).
+```
 
-📊 Data Synchronization Workflow
-The following diagram illustrates the high-level data flow:
+## 🤝 Contributing
 
-Data Source: The latest spatial data (shapefiles) is stored in a MongoDB database.
+Contributions are welcome!
 
-Synchronization: The server application connects to this database.
+1. 🍴 Fork the repository
+2. 🌿 Create a feature branch: `git checkout -b feature/AmazingFeature`
+3. 💾 Commit your changes: `git commit -m 'Add some AmazingFeature'`
+4. 📤 Push to the branch: `git push origin feature/AmazingFeature`
+5. 🎉 Open a Pull Request
 
-Live Stream: It listens for updates and streams the geographical boundaries, rivers, and villages.
+## 📜 License
 
-Visualization: The client interface (the web page) renders this data on an interactive map.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
-🤝 Contributing
-Contributions to improve the platform are welcome. Please follow these steps:
+## 📞 Contact
 
-Fork the repository.
+For queries or issues related to this project, reach out via the repository's [Issues](https://github.com/RawatGitLab/District-Dehradun/issues) page.
 
-Create a new feature branch (git checkout -b feature/AmazingFeature).
+---
 
-Commit your changes (git commit -m 'Add some AmazingFeature').
-
-Push to the branch (git push origin feature/AmazingFeature).
-
-Open a Pull Request.
-
-📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+<p align="center">Built for Dehradun District 🏔️</p>
