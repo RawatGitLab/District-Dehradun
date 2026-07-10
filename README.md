@@ -2,7 +2,7 @@
 
 An interactive, map-based portal for **Almora District**, built with React, TypeScript, Leaflet, and the Google Gemini API. The app lets citizens and administrators explore geospatial data, layers, and district information through a fast, modern web interface.
 
-> **Live demo:** 
+> **Live demo:** https://district-dehradun.onrender.com/
 
 ---
 
