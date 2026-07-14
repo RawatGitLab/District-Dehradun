@@ -1,6 +1,6 @@
 # 🗺️ District Dehradun – GIS Viewer
 
-An interactive, map-based portal for **Almora District**, built with React, TypeScript, Leaflet, and the Google Gemini API. The app lets citizens and administrators explore geospatial data, layers, and district information through a fast, modern web interface.
+An interactive, map-based portal for **Dehradun District**, built with React, TypeScript and Leaflet. The app lets citizens and administrators explore geospatial data, layers, and district information through a fast, modern web interface.
 
 > **Live demo:** https://district-dehradun.onrender.com/
 
@@ -8,7 +8,8 @@ An interactive, map-based portal for **Almora District**, built with React, Type
 
 ## 📖 About
 
-This repository hosts the **Dehradun GIS Viewer** — a web application for visualizing geographic and administrative data for Dehradun District, Uttarakhand. It combines an interactive Leaflet map with an Express/Node backend and Gemini-powered AI capabilities.
+This repository hosts the **Dehradun GIS Viewer** — a web application for visualizing geographic and administrative data for Dehradun District, Uttarakhand.
+
 ## ✨ Features
 
 - 🗺️ **Interactive mapping** with [Leaflet](https://leafletjs.com/) and [proj4](https://github.com/proj4js/proj4js) for coordinate/projection handling
@@ -25,7 +26,6 @@ This repository hosts the **Dehradun GIS Viewer** — a web application for visu
 |---|---|
 | Frontend | React 19, TypeScript, Vite, Tailwind CSS |
 | Mapping | Leaflet, proj4 |
-| AI | Google Gemini (`@google/genai`) |
 | Backend | Node.js, Express, tsx |
 | Database | MongoDB |
 | Animation / UI | Motion, Lucide React |
@@ -53,7 +53,6 @@ District-Dehradun/
 
 - [Node.js](https://nodejs.org/) (LTS recommended)
 - npm
-- A [Gemini API key](https://aistudio.google.com/apikey)
 
 ### Installation
 
@@ -78,7 +77,6 @@ cp .env.example .env
 
 | Variable | Description |
 |---|---|
-| `GEMINI_API_KEY` | Required for Gemini AI API calls |
 | `APP_URL` | The URL where the app is hosted (used for self-referential links/callbacks) |
 
 ### Available Scripts
