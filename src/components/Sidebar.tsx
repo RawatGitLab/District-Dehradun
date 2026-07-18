@@ -353,7 +353,7 @@ export default function Sidebar({
                 className="w-3.5 h-3.5 rounded border shadow-inner inline-block shrink-0" 
                 style={{ 
                   borderColor: layer.color, 
-                  backgroundColor: `${layer.fillColor}${Math.round(layer.fillOpacity * 255).toString(16).padStart(2, '0')}` 
+                  backgroundColor: layer.fillColor === "transparent" ? "transparent" : `${layer.fillColor}${Math.round(layer.fillOpacity * 255).toString(16).padStart(2, '0')}` 
                 }}
               />
             )}

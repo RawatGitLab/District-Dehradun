@@ -26,7 +26,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
 
   // Map & Interaction state
-  const [activeBaseMap, setActiveBaseMap] = useState<string>("osm");
+  const [activeBaseMap, setActiveBaseMap] = useState<string>("satellite");
   const [selectedFeature, setSelectedFeature] = useState<GisFeature | null>(null);
   const [hoveredFeature, setHoveredFeature] = useState<GisFeature | null>(null);
   const [isTableCollapsed, setIsTableCollapsed] = useState<boolean>(true);
@@ -244,10 +244,24 @@ export default function App() {
         fillColor = `hsl(${hue}, 70%, 65%)`;
       }
 
+      // Override for Polygons & Lines as requested
+      if (type === "polygon") {
+        color = "#ffffff";
+        fillColor = "transparent";
+        fillOpacity = 0.0;
+        weight = 2.5;
+      } else if (type === "linestring") {
+        fillOpacity = 0.0;
+        fillColor = "transparent";
+        weight = 2.5;
+      }
+
+      const isDistrictBoundary = name.toLowerCase().replace(/[\s-_]+/g, "") === "districtboundary";
+
       return {
         id: `layer-${index}-${name.replace(/\s+/g, '-')}`,
         name: name,
-        visible: name === "District-Boundary" || name === "Block-Boundary" || name === "Landuse-Agriculture",
+        visible: isDistrictBoundary,
         type: type,
         color: color,
         fillColor: fillColor,
@@ -292,11 +306,10 @@ export default function App() {
     setLayers((prev) => {
       return prev.map((l) => {
         if (l.id === id) {
-          // If the fill color was same as color, update it too
           return { 
             ...l, 
             color: color, 
-            fillColor: color 
+            fillColor: l.type === "polygon" ? "transparent" : color 
           };
         }
         return l;
@@ -309,8 +322,12 @@ export default function App() {
     setHoveredFeature(null);
     setMeasureMode("none");
     setMeasurePoints([]);
-    // Simple state refresh to reset sliders or zoom
-    setLayers((prev) => prev.map((l) => ({ ...l, visible: true, opacity: l.type === "polygon" && l.name.toLowerCase().includes("tehsil") ? 0.85 : 0.9 })));
+    // Reset to only show the District-Boundary layer
+    setLayers((prev) => prev.map((l) => ({ 
+      ...l, 
+      visible: l.name.toLowerCase().replace(/[\s-_]+/g, "") === "districtboundary", 
+      opacity: l.type === "polygon" ? 0.9 : 1.0 
+    })));
   };
 
   const toggleAllLayers = (visible: boolean) => {
