@@ -407,20 +407,6 @@ export default function App() {
         <div className="flex items-center space-x-2.5 text-xs font-semibold text-slate-300">
           <ThemeToggle theme={theme} onToggle={setTheme} />
 
-          {isAuthenticated && (
-            <div className="flex items-center gap-2 bg-slate-800 border border-slate-700/60 px-2.5 py-1.5 rounded-lg text-slate-200">
-              <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-[11px] font-bold text-slate-200 font-mono">{authUser}</span>
-              <button
-                onClick={handleLogout}
-                className="ml-1 p-1 hover:bg-slate-700 text-slate-400 hover:text-red-400 rounded transition-colors cursor-pointer"
-                title="Log out of GIS Portal"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          )}
-
           <button
             onClick={() => fetchFeatures(true)}
             disabled={loading}
@@ -440,6 +426,17 @@ export default function App() {
             <Database className="w-3.5 h-3.5 text-pink-400" />
             <span>Entities: <strong className="text-white font-mono">{features.length}</strong></span>
           </div>
+
+          {isAuthenticated && (
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold px-3 py-1.5 rounded-lg text-xs shadow-xs transition duration-150 cursor-pointer select-none"
+              title="Log out of GIS Portal"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Logout</span>
+            </button>
+          )}
         </div>
       </header>
 
