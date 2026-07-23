@@ -88,6 +88,26 @@ async function getMongoClient() {
 // Enable JSON parser
 app.use(express.json());
 
+// API: Authentication route using environment variables
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body || {};
+  const expectedUsername = process.env.VITE_GIS_USERNAME;
+  const expectedPassword = process.env.VITE_GIS_PASSWORD;
+
+  if (expectedUsername && expectedPassword && username === expectedUsername && password === expectedPassword) {
+    return res.json({
+      success: true,
+      message: "Authentication successful",
+      user: { username: expectedUsername }
+    });
+  }
+
+  return res.status(401).json({
+    success: false,
+    error: "Invalid username or password"
+  });
+});
+
 // API: Debug MongoDB schema
 app.get("/api/debug", async (req, res) => {
   try {

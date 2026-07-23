@@ -314,7 +314,7 @@ export default function Sidebar({
   }, [layers]);
 
   const renderLayerItem = (layer: LayerConfig) => (
-    <div key={layer.id} className="p-3 flex flex-col gap-2 hover:bg-slate-50 transition-colors">
+    <div key={layer.id} className="p-3 flex flex-col gap-2 hover:bg-slate-100/60 dark:hover:bg-slate-800/50 transition-colors">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2.5 min-w-0">
           {/* Interactive toggle */}
@@ -322,8 +322,8 @@ export default function Sidebar({
             onClick={() => toggleLayer(layer.id)}
             className={`p-1 rounded-md transition duration-150 ${
               layer.visible 
-                ? "text-indigo-600 bg-indigo-50 hover:bg-indigo-100" 
-                : "text-slate-400 bg-slate-100 hover:bg-slate-200"
+                ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/60" 
+                : "text-slate-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700"
             }`}
           >
             {layer.visible ? (
@@ -338,7 +338,7 @@ export default function Sidebar({
             {/* Legend Badge representation */}
             {layer.type === "point" && (
               <span 
-                className="w-3 h-3 rounded-full border border-white inline-block shadow-sm shrink-0" 
+                className="w-3 h-3 rounded-full border border-white dark:border-slate-800 inline-block shadow-xs shrink-0" 
                 style={{ backgroundColor: layer.color }}
               />
             )}
@@ -358,10 +358,10 @@ export default function Sidebar({
               />
             )}
             {layer.type === "unknown" && (
-              <span className="w-3 h-3 bg-slate-300 border border-slate-400 inline-block shrink-0" />
+              <span className="w-3 h-3 bg-slate-300 dark:bg-slate-600 border border-slate-400 inline-block shrink-0" />
             )}
 
-            <span className={`text-xs font-semibold ${layer.visible ? 'text-slate-800' : 'text-slate-400'} truncate`} title={layer.name}>
+            <span className={`text-xs font-semibold ${layer.visible ? 'text-slate-800 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'} truncate`} title={layer.name}>
               {layer.name}
             </span>
           </div>
@@ -370,7 +370,7 @@ export default function Sidebar({
         {/* Locate/zoom button */}
         <button
           onClick={() => onZoomToLayer(layer.name)}
-          className="p-1 rounded text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition duration-150 shrink-0"
+          className="p-1 rounded text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition duration-150 shrink-0"
           title={`Zoom map to ${layer.name}`}
         >
           <Compass className="w-3.5 h-3.5" />
@@ -483,15 +483,15 @@ export default function Sidebar({
 
   if (isCollapsed) {
     return (
-      <aside className="w-12 border-r border-slate-200 bg-slate-50 flex flex-col items-center pt-16 pb-4 h-full shrink-0 shadow-sm font-sans transition-all duration-300">
+      <aside className="w-12 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex flex-col items-center pt-16 pb-4 h-full shrink-0 shadow-xs font-sans transition-all duration-300">
         <button
           onClick={() => setIsCollapsed(false)}
           title="Open Map Controller"
-          className="p-2 text-slate-600 hover:text-indigo-600 rounded-md hover:bg-indigo-50 border border-slate-200 bg-white shadow-sm transition duration-150 mt-4 mb-8 cursor-pointer"
+          className="p-2 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-md hover:bg-indigo-50 dark:hover:bg-indigo-950/50 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xs transition duration-150 mt-4 mb-8 cursor-pointer"
         >
           <Maximize2 className="w-4 h-4" />
         </button>
-        <div className="vertical-text text-[10px] uppercase font-bold tracking-widest text-slate-400 font-sans select-none whitespace-nowrap origin-center rotate-90 mt-16 leading-none flex items-center gap-1.5">
+        <div className="vertical-text text-[10px] uppercase font-bold tracking-widest text-slate-400 dark:text-slate-500 font-sans select-none whitespace-nowrap origin-center rotate-90 mt-16 leading-none flex items-center gap-1.5">
           <Database className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
           Basemaps & Layers
         </div>
@@ -500,14 +500,14 @@ export default function Sidebar({
   }
 
   return (
-    <aside className="w-80 border-r border-slate-200 bg-slate-50 flex flex-col h-full shrink-0 shadow-sm font-sans">
+    <aside className="w-80 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex flex-col h-full shrink-0 shadow-xs font-sans transition-colors duration-200">
       {/* Sidebar Header */}
-      <div className="p-4 border-b border-slate-200 bg-white flex items-center justify-between">
+      <div className="p-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <Database className="w-5 h-5 text-indigo-600 animate-pulse" />
+          <Database className="w-5 h-5 text-indigo-600 dark:text-indigo-400 animate-pulse" />
           <div>
-            <h1 className="text-sm font-bold text-slate-800 tracking-tight leading-none">Geo Spatial Server</h1>
-            <span className="text-[10px] text-slate-500 font-medium">MongoDB Database</span>
+            <h1 className="text-sm font-bold text-slate-800 dark:text-slate-100 tracking-tight leading-none">Geo Spatial Server</h1>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">MongoDB Database</span>
           </div>
         </div>
         <div className="flex items-center gap-1.5">
@@ -516,8 +516,8 @@ export default function Sidebar({
             title={anyLayerActive ? "Deactivate All Layers" : "Activate All Layers"}
             className={`p-1.5 rounded-md transition duration-150 border border-transparent cursor-pointer ${
               anyLayerActive
-                ? "text-indigo-600 bg-indigo-50 hover:bg-indigo-100"
-                : "text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/60"
+                : "text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
             }`}
           >
             {anyLayerActive ? (
@@ -529,7 +529,7 @@ export default function Sidebar({
           <button
             onClick={() => setIsCollapsed(true)}
             title="Minimize Panel"
-            className="p-1.5 text-slate-400 hover:text-slate-600 rounded-md hover:bg-slate-100 transition duration-150 border border-transparent cursor-pointer"
+            className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition duration-150 border border-transparent cursor-pointer"
           >
             <Minimize2 className="w-4 h-4" />
           </button>

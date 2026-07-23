@@ -3,6 +3,8 @@ import { GisFeature, LayerConfig, BaseMap } from "./types";
 import Sidebar from "./components/Sidebar";
 import MapComponent from "./components/MapComponent";
 import AttributeTable from "./components/AttributeTable";
+import ThemeToggle from "./components/ThemeToggle";
+import Login from "./components/Login";
 import { 
   Database, 
   Layers, 
@@ -16,7 +18,9 @@ import {
   Sparkles, 
   Info,
   ServerCrash,
-  RefreshCw
+  RefreshCw,
+  LogOut,
+  UserCheck
 } from "lucide-react";
 
 export default function App() {
@@ -24,6 +28,52 @@ export default function App() {
   const [layers, setLayers] = useState<LayerConfig[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("gis_authenticated") === "true";
+    }
+    return false;
+  });
+  const [authUser, setAuthUser] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("gis_auth_user") || import.meta.env.VITE_GIS_USERNAME || "";
+    }
+    return import.meta.env.VITE_GIS_USERNAME || "";
+  });
+
+  const handleLoginSuccess = (user: string) => {
+    setIsAuthenticated(true);
+    setAuthUser(user);
+    sessionStorage.setItem("gis_authenticated", "true");
+    sessionStorage.setItem("gis_auth_user", user);
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    sessionStorage.removeItem("gis_authenticated");
+    sessionStorage.removeItem("gis_auth_user");
+  };
+
+  // Theme state: light as default for the whole application
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("app-theme");
+      if (saved === "dark" || saved === "light") return saved;
+    }
+    return "light";
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+    localStorage.setItem("app-theme", theme);
+  }, [theme]);
 
   // Map & Interaction state
   const [activeBaseMap, setActiveBaseMap] = useState<string>("satellite");
@@ -335,40 +385,58 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-slate-100 overflow-hidden font-sans">
+    <div className="flex flex-col h-screen w-screen bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 overflow-hidden font-sans transition-colors duration-200">
       {/* Visual Navigation Header */}
-      <header className="h-14 bg-slate-900 text-slate-100 px-4 flex items-center justify-between border-b border-slate-950 shrink-0 select-none shadow-md">
+      <header className="relative z-[6000] h-14 bg-slate-900 text-slate-100 px-4 flex items-center justify-between border-b border-slate-950 shrink-0 select-none shadow-md">
         <div className="flex items-center space-x-3">
           <div className="bg-indigo-600 p-1.5 rounded-lg text-white shadow-sm flex items-center justify-center">
             <Compass className="w-5 h-5 text-indigo-100" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-extrabold tracking-tight text-white uppercase">Geography For District Planners/Administrators</span>
+              <span className="text-xs font-extrabold tracking-tight text-white uppercase">Geography For District Planners/Administrators</span>
               <span className="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-1.5 py-0.5 rounded border border-emerald-500/30 animate-pulse">
                 Live Server
               </span>
             </div>
-            <h2 className="text-base font-bold tracking-tight text-slate-200">District Dehradun</h2>
+            <h2 className="text-sm font-bold tracking-tight text-slate-300">District Dehradun</h2>
           </div>
         </div>
 
         {/* Global summary specs */}
-        <div className="flex items-center space-x-3 text-xs font-semibold text-slate-300">
+        <div className="flex items-center space-x-2.5 text-xs font-semibold text-slate-300">
+          <ThemeToggle theme={theme} onToggle={setTheme} />
+
+          {isAuthenticated && (
+            <div className="flex items-center gap-2 bg-slate-800 border border-slate-700/60 px-2.5 py-1.5 rounded-lg text-slate-200">
+              <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="text-[11px] font-bold text-slate-200 font-mono">{authUser}</span>
+              <button
+                onClick={handleLogout}
+                className="ml-1 p-1 hover:bg-slate-700 text-slate-400 hover:text-red-400 rounded transition-colors cursor-pointer"
+                title="Log out of GIS Portal"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
           <button
             onClick={() => fetchFeatures(true)}
             disabled={loading}
-            className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 disabled:bg-indigo-800/40 text-white font-extrabold px-3 py-1.5 rounded-lg text-xs shadow-md transition duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
+            className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 disabled:bg-indigo-800/40 text-white font-extrabold px-3 py-1.5 rounded-lg text-xs shadow-sm transition duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
             title="Force reload all GIS layers from live MongoDB Atlas database"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-            <span>Sync Database</span>
+            <span className="hidden sm:inline">Sync Database</span>
           </button>
-          <div className="hidden md:flex items-center gap-1.5 bg-slate-800 px-2.5 py-1.5 rounded-md">
+
+          <div className="hidden md:flex items-center gap-1.5 bg-slate-800 border border-slate-700/60 px-2.5 py-1.5 rounded-md">
             <Layers className="w-3.5 h-3.5 text-indigo-400" />
             <span>Layers: <strong className="text-white font-mono">{layers.length}</strong></span>
           </div>
-          <div className="hidden md:flex items-center gap-1.5 bg-slate-800 px-2.5 py-1.5 rounded-md">
+
+          <div className="hidden md:flex items-center gap-1.5 bg-slate-800 border border-slate-700/60 px-2.5 py-1.5 rounded-md">
             <Database className="w-3.5 h-3.5 text-pink-400" />
             <span>Entities: <strong className="text-white font-mono">{features.length}</strong></span>
           </div>
@@ -378,21 +446,21 @@ export default function App() {
       {/* Main Core GIS Workspace Layout */}
       <main className="flex-1 flex overflow-hidden min-h-0 relative">
         {loading ? (
-          <div className="absolute inset-x-0 inset-y-0 bg-slate-900/90 backdrop-blur-sm flex flex-col items-center justify-center z-50 p-6 select-none font-sans">
-            <div className="bg-slate-800 border border-slate-700/80 p-8 rounded-2xl shadow-2xl flex flex-col items-center max-w-sm text-center">
+          <div className="absolute inset-x-0 inset-y-0 bg-slate-900/30 dark:bg-slate-900/90 backdrop-blur-sm flex flex-col items-center justify-center z-50 p-6 select-none font-sans">
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 p-8 rounded-2xl shadow-2xl flex flex-col items-center max-w-sm text-center">
               <div className="h-12 w-12 rounded-full bg-indigo-500/10 flex items-center justify-center mb-4">
-                <Loader2 className="w-6 h-6 text-indigo-500 animate-spin" />
+                <Loader2 className="w-6 h-6 text-indigo-600 dark:text-indigo-400 animate-spin" />
               </div>
-              <h3 className="text-sm font-bold text-slate-100">Synchronizing Spatial Shapefiles Server</h3>
-              <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-                Connecting securely to database. Downloading geographical boundaries, river streams, and villages of <span className="text-indigo-400 font-semibold">Dehradun</span>...
+              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">Synchronizing Spatial Shapefiles Server</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                Connecting securely to database. Downloading geographical boundaries, river streams, and villages of <span className="text-indigo-600 dark:text-indigo-400 font-semibold">Dehradun</span>...
               </p>
               
               {/* Spinning status indicator */}
-              <div className="w-full bg-slate-700 h-1 rounded-full overflow-hidden mt-6">
-                <div className="bg-indigo-500 h-full w-2/3 rounded-full animate-pulse" />
+              <div className="w-full bg-slate-200 dark:bg-slate-700 h-1 rounded-full overflow-hidden mt-6">
+                <div className="bg-indigo-600 dark:bg-indigo-500 h-full w-2/3 rounded-full animate-pulse" />
               </div>
-              <span className="text-[9px] text-slate-500 font-mono mt-2 uppercase tracking-widest">Awaiting MongoDB Live Stream</span>
+              <span className="text-[9px] text-slate-400 dark:text-slate-500 font-mono mt-2 uppercase tracking-widest">Awaiting MongoDB Live Stream</span>
             </div>
           </div>
         ) : error ? (
@@ -473,6 +541,9 @@ export default function App() {
           </>
         )}
       </main>
+
+      {/* Transparent Login Modal Overlay - App background remains visible underneath */}
+      {!isAuthenticated && <Login onLoginSuccess={handleLoginSuccess} />}
     </div>
   );
 }
